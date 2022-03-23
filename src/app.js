@@ -20,7 +20,6 @@ app.get('/Search', (req, res) => {
 
 app.get('/img/:image', (req, res) => {
     res.sendFile(path.join(__dirname + '/../public/img/' + req.params.image));
-
 })
 
 app.listen(3000, () => {
