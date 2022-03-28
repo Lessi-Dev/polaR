@@ -4,33 +4,106 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>polaR</title>
+    <title>polaR | Home</title>
     <link rel="icon" href="img/polaR-Logo.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css">
+    <style>
+      #ColumnHost {
+        overflow: scroll;
+      }
+      .navbar-menu{
+        display: flex;
+      }
+      .playbackButton {
+        opacity: 1.0;
+        transition: opacity 1s ease-in-out;
+        -moz-transition: opacity 1s ease-in-out;
+        -webkit-transition: opacity 1s ease-in-out;
+      }
+      .playbackButton:hover {
+        opacity: 0.7;
+        transition: opacity .55s ease-in-out;
+        -moz-transition: opacity .55s ease-in-out;
+        -webkit-transition: opacity .55s ease-in-out;
+      }
+    </style>
 </head>
 <body>
-    <nav class="navbar" role="navigation" aria-label="main navigation">
-        <div class="navbar-brand">
+  <nav class="navbar" role="navigation" aria-label="main navigation">
+      <div class="navbar-brand">
+        <a class="navbar-item" href="/">
+          <img src="img/polaR-Logo.png" style="transform: scale(1.6);">
+        </a>
+    
+      </div>
+    
+      <div id="navbarBasicExample" class="navbar-menu">
+        <div class="navbar-start">
           <a class="navbar-item" href="/">
-            <img src="img/polaR-Logo.png" style="transform: scale(1.6);">
+            Home
           </a>
-      
+
+          <a class="navbar-item" href="/">
+            Playlists
+          </a>
+
+          <a class="navbar-item" href="/Search">
+              Search
+          </a>
+    
+          <a class="navbar-item" href="/Add">
+              Add New
+          </a>
         </div>
-      
-        <div id="navbarBasicExample" class="navbar-menu">
-          <div class="navbar-start">
-            <a class="navbar-item" href="/">
-              Home
-            </a>
-      
-            <a class="navbar-item" href="/Search">
-                Search
-            </a>
-      
-            <a class="navbar-item" href="/Add">
-                Add New
-            </a>
+      </div>
+  </nav>
+  <br>
+  <div id="ColumnHost" class="columns">
+  </div>
+  <script>
+    const ColumnHost = document.getElementById('ColumnHost');
+    function AddSong(Name,SongImage,Artist,ReleaseDate,AlbumImage,Album){
+      console.log(ColumnHost);
+      ColumnHost.innerHTML += (`
+      <div class="column is-one-fifth playbackButton" id="${Name}">
+        <div class="card">
+          <div class="card-image">
+            <figure class="image is-4by3">
+              <img src="${SongImage}" alt="Song image">
+            </figure>
           </div>
-      </nav>
+          <div class="card-content">
+            <div class="media">
+              <div class="media-left">
+                <figure class="image is-48x48">
+                  <img src="${AlbumImage}" alt="Album image">
+                </figure>
+              </div>
+              <div class="media-content">
+                <p class="title is-4">${Name}</p>
+                <p class="subtitle is-6">${Artist}</p>
+              </div>
+            </div>
+
+            <div class="content">
+              From the album <strong>${Album}</strong> released in 
+              <time datetime="${ReleaseDate}">${ReleaseDate}</time>
+            </div>
+          </div>
+        </div>
+      </div>
+      `);
+      document.getElementById(Name).addEventListener('click', function(e){
+        e.preventDefault();
+        document.getElementById('audio').src = SongImage;
+      });
+    }
+    AddSong("PolaR","img/polaR-Logo.png","Edo Sayia","2019","img/PolarLogo.jpg","polaR");
+    AddSong("PolaR","img/polaR-Logo.png","Edo Sayia","2019","img/PolarLogo.jpg","polaR");
+    AddSong("PolaR","img/polaR-Logo.png","Edo Sayia","2019","img/PolarLogo.jpg","polaR");
+    AddSong("PolaR","img/polaR-Logo.png","Edo Sayia","2019","img/PolarLogo.jpg","polaR");
+    AddSong("PolaR","img/polaR-Logo.png","Edo Sayia","2019","img/PolarLogo.jpg","polaR");
+    AddSong("PolaR","img/polaR-Logo.png","Edo Sayia","2019","img/PolarLogo.jpg","polaR");
+  </script>
 </body>
 </html>
