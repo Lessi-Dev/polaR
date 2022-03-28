@@ -77,7 +77,7 @@
               }
             }
         };
-        xhttp.open("GET", `http://localhost:3000/SearchResults/${input.value}`, true);
+        xhttp.open("GET", `http://localhost:3000/SearchResults/${input.value.replace("/","%47")}`, true);
         xhttp.send();
       }
       function emptyColumns() {

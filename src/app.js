@@ -8,6 +8,7 @@ var readline = require('readline');
 var {google} = require('googleapis');
 const ytdl = require('ytdl-core');
 const yt = require('youtube-search-without-api-key');
+const ffmpeg = require('fluent-ffmpeg');
 
 const app = express();
 //mongoose.connect('mongodb://mongo/polaR', { useNewUrlParser: true });
@@ -31,41 +32,27 @@ app.get('/SearchResults/:Input',async (req, res) => {
     res.send(videos);
 })
 
-app.get('/AddTracks/:Name', async (req, res) => {
-    const name = req.params.Name;
-    const videos = await yt.search(name);
-    const info = await ytdl.getBasicInfo(youtubeUrl);
-
-    console.log(info.videoDetails.thumbnails[0].url);
-
-    const thumbnail = info.videoDetails.thumbnails[0].url;
-
-
-    const title =
-      info.videoDetails.title +
-      " by " +
-      info.videoDetails.author.name +
-      "-" +
-      new Date().getTime().toString();
-
-    ytdl(youtubeUrl)
-      .pipe(fs.createWriteStream(`${process.cwd()}/downloads/${title}.mp4`))
-      .on("finish", async () => {
-        socket.publishEvent(Events.VIDEO_DOWNLOADED, title);
-
-        const file = `${process.cwd()}/downloads/${title}.mp4`;
-
-        const video = new Video({
-          title,
-          file,
-          thumbnail,
-        });
-
-        await video.save();
-
-        done();
-    })
+app.get('/DownloadTrack/:token', async (req, res) => {
+  const id = req.params.token;
+  let stream = ytdl(id, {
+    quality: 'highestaudio',
   });
+  let start = Date.now();
+  ffmpeg(stream)
+    .audioBitrate(128)
+    .save(`./downloads/${id}.mp3`)
+    .on('progress', p => {
+      readline.cursorTo(process.stdout, 0);
+      process.stdout.write(`${p.targetSize}kb downloaded`);
+    })
+    .on('end', () => {
+      console.log(`\ndone, thanks - ${(Date.now() - start) / 1000}s`);
+    });
+  });
+
+app.get('/AudioFile/:id', async (req, res) => {
+  res.sendFile(path.join(__dirname + `/../downloads/${req.params.id}.mp3`));
+})
 
 app.get('/img/:image', (req, res) => {
     res.sendFile(path.join(__dirname + '/../public/img/' + req.params.image));
