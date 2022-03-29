@@ -11,15 +11,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@ffmpeg-installer/ffmpeg": "^1.1.0",
     "express": "^4.17.3",
     "fluent-ffmpeg": "^2.1.2",
-    "google-auth-library": "^7.14.1",
-    "googleapis": "^99.0.0",
     "i": "^0.3.7",
     "mongoose": "^6.2.8",
     "npm": "^8.5.5",
-    "spotify-url-info": "^3.0.0",
-    "spotify-web-api-node": "^5.0.2",
     "youtube-api": "^3.0.1",
     "youtube-search-without-api-key": "^1.0.7",
     "ytdl-core": "^4.11.0"

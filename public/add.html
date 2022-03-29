@@ -87,7 +87,15 @@
         }
       }
       function download(name) {
-        console.log(name.id);
+        const xhttp = new XMLHttpRequest();
+        xhttp.onload = function() {
+            if (xhttp.readyState == 4 && xhttp.status == 200) {
+              console.log(xhttp.responseText);
+            }
+        };
+        const id = name.id.split("=")[1];
+        xhttp.open("GET", `http://localhost:3000/DownloadTrack/${id}`, true);
+        xhttp.send();
       }
       function addSearchResult(info) {
         console.log(info.snippet.thumbnails.default.url);

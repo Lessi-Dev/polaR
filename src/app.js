@@ -2,13 +2,13 @@ const express = require('express');
 const fs = require('fs');
 const path = require('path');
 const mongoose = require('mongoose');
-const Youtube = require("youtube-api")
 const config = require('./config');
 var readline = require('readline');
-var {google} = require('googleapis');
 const ytdl = require('ytdl-core');
 const yt = require('youtube-search-without-api-key');
+const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
 const ffmpeg = require('fluent-ffmpeg');
+ffmpeg.setFfmpegPath(ffmpegPath);
 
 const app = express();
 //mongoose.connect('mongodb://mongo/polaR', { useNewUrlParser: true });
@@ -37,16 +37,11 @@ app.get('/DownloadTrack/:token', async (req, res) => {
   let stream = ytdl(id, {
     quality: 'highestaudio',
   });
-  let start = Date.now();
   ffmpeg(stream)
     .audioBitrate(128)
-    .save(`./downloads/${id}.mp3`)
-    .on('progress', p => {
-      readline.cursorTo(process.stdout, 0);
-      process.stdout.write(`${p.targetSize}kb downloaded`);
-    })
+    .save(path.join(__dirname + `/../downloads/${id}.mp3`))
     .on('end', () => {
-      console.log(`\ndone, thanks - ${(Date.now() - start) / 1000}s`);
+      res.send('done');
     });
   });
 
