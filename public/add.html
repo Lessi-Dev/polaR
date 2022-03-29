@@ -90,7 +90,8 @@
         const xhttp = new XMLHttpRequest();
         xhttp.onload = function() {
             if (xhttp.readyState == 4 && xhttp.status == 200) {
-              console.log(xhttp.responseText);
+              console.log(name);
+              name.classList.append("is-primary");
             }
         };
         const id = name.id.split("=")[1];
