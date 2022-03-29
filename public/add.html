@@ -87,11 +87,14 @@
         }
       }
       function download(name) {
+        name.classList.add("is-loading");
         const xhttp = new XMLHttpRequest();
         xhttp.onload = function() {
             if (xhttp.readyState == 4 && xhttp.status == 200) {
-              console.log(name);
-              name.classList.append("is-primary");
+              name.classList.remove("is-loading");
+              name.classList.add("is-primary");
+              name.children[0].classList.remove("fa-download");
+              name.children[0].classList.add("fa-check");
             }
         };
         const id = name.id.split("=")[1];
@@ -129,7 +132,6 @@
       input.addEventListener('keydown', function(e) {
         clearTimeout(typingTimer);
       });
-      addSearchResult();
     </script>
 </body>
 </html>

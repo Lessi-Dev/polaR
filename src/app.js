@@ -4,15 +4,60 @@ const path = require('path');
 const mongoose = require('mongoose');
 const config = require('./config');
 var readline = require('readline');
+const Genius = require("genius-lyrics");
 const ytdl = require('ytdl-core');
 const yt = require('youtube-search-without-api-key');
 const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
 const ffmpeg = require('fluent-ffmpeg');
 ffmpeg.setFfmpegPath(ffmpegPath);
 
-const app = express();
-//mongoose.connect('mongodb://mongo/polaR', { useNewUrlParser: true });
+const Client = new Genius.Client();
 
+const app = express();
+mongoose.connect('mongodb+srv://HaikeWagner:4PIC2vyF9YRjMAT8@users.2mhro.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', { useNewUrlParser: true });
+
+mongoose.connection.on('connected', () => {
+  console.log('Connected to database');
+})
+.on('error', (err) => {
+  console.log('Error connecting to database', err);
+});
+
+const TrackSchema = mongoose.Schema({
+  title: 
+  {
+    type:String
+  },
+  artist:   
+  {
+    type:String
+  },
+  date:    
+  {
+    type:String
+  },
+  cover:    
+  {
+    type:String
+  },
+  id:
+  {
+    type:String
+  },
+  lyrics:    
+  {
+    type:String
+  },
+});
+
+TrackSchema.pre('save', async function(next) {
+  if(this.lyrics == '🇺🇦') {
+    const searches = await Client.songs.search(this.title + ' ' + this.artist);
+    this.lyrics = await searches[0].lyrics();
+  }
+})
+
+const Track = mongoose.model('Track', TrackSchema);
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname + '/../public/index.html'));
@@ -42,8 +87,19 @@ app.get('/DownloadTrack/:token', async (req, res) => {
     .save(path.join(__dirname + `/../downloads/${id}.mp3`))
     .on('end', () => {
       res.send('done');
+      const Info = ytdl.getInfo(req.params.token).then(info => {
+        console.log(info.videoDetails);
+        new Track({
+          title: info.videoDetails.title,
+          artist: info.videoDetails.author.name,
+          date: info.videoDetails.publishDate,
+          cover: info.videoDetails.thumbnails[0].url,
+          id: id,
+          lyrics: '🇺🇦',
+        }).save();
+      });
     });
-  });
+})
 
 app.get('/AudioFile/:id', async (req, res) => {
   res.sendFile(path.join(__dirname + `/../downloads/${req.params.id}.mp3`));
