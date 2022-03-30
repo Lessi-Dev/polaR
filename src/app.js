@@ -32,6 +32,10 @@ const TrackSchema = mongoose.Schema({
   {
     type:String
   },
+  album:
+  {
+    type:String
+  },
   date:    
   {
     type:String
@@ -39,6 +43,10 @@ const TrackSchema = mongoose.Schema({
   cover:    
   {
     type:String
+  },
+  duration:
+  {
+    type:Number
   },
   id:
   {
@@ -50,10 +58,29 @@ const TrackSchema = mongoose.Schema({
   },
 });
 
+function getDuration(id) {
+  return new Promise(function(resolve, reject) {
+    ffmpeg.ffprobe(path.join(__dirname,`/../downloads/${id}.mp3`), function(err, metadata) {
+      console.log(metadata.format.duration);
+      resolve(metadata.format.duration);
+    });
+  });
+};
+
 TrackSchema.pre('save', async function(next) {
   if(this.lyrics == '🇺🇦') {
-    const searches = await Client.songs.search(this.title + ' ' + this.artist);
-    this.lyrics = await searches[0].lyrics();
+    try{
+      getDuration(this.id).then(duration => {
+        this.duration = duration;
+        next();
+      })
+      const searches = await Client.songs.search(this.title + ' ' + this.artist.replace("- Topic", ''));
+      this.lyrics = await searches[0].lyrics();
+      console.log(searches[0]);
+      this.album = searches[0].Song.album;
+    } catch(err) {
+      console.log(err);
+    }
   }
 })
 
@@ -99,6 +126,11 @@ app.get('/DownloadTrack/:token', async (req, res) => {
         }).save();
       });
     });
+});
+
+app.get('/AllTracks', async (req, res) => {
+  const tracks = await Track.find();
+  res.send(tracks);
 })
 
 app.get('/AudioFile/:id', async (req, res) => {
