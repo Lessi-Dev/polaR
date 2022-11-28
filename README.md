@@ -1,2 +1,2 @@
-# polaR is a Music downloader with intigrated music player
+# polaR is a Music downloader with integrated music player
 Still in progress
