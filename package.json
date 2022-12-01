@@ -20,6 +20,6 @@
     "npm": "^8.5.5",
     "youtube-api": "^3.0.1",
     "youtube-search-without-api-key": "^1.0.7",
-    "ytdl-core": "^4.11.0"
+    "ytdl-core": "^4.11.2"
   }
 }
